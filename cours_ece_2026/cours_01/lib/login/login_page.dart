@@ -4,8 +4,15 @@ import 'continue_button.dart';
 import 'or_separator.dart';
 import 'continue_with_button.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  String _email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +30,17 @@ class LoginPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           children: [
-            const EmailField(),
+            EmailField(
+              onChanged: (String value) {
+                setState(() {
+                  _email = value;
+                });
+              },
+            ),
 
             const SizedBox(height: 24),
 
-            ContinueButton(
-              onPressed: () {
-                print('Continuer');
-              },
-            ),
+            ContinueButton(onPressed: _email.isNotEmpty ? () {} : null),
 
             const SizedBox(height: 40),
 
@@ -42,9 +51,7 @@ class LoginPage extends StatelessWidget {
             ContinueWithButton(
               provider: 'Apple',
               iconPath: 'assets/apple_logo.svg',
-              onPressed: () {
-                print('Apple');
-              },
+              onPressed: () {},
             ),
 
             const SizedBox(height: 16),
@@ -52,9 +59,7 @@ class LoginPage extends StatelessWidget {
             ContinueWithButton(
               provider: 'Google',
               iconPath: 'assets/google_logo.svg',
-              onPressed: () {
-                print('Google');
-              },
+              onPressed: () {},
             ),
 
             const SizedBox(height: 16),
@@ -62,9 +67,7 @@ class LoginPage extends StatelessWidget {
             ContinueWithButton(
               provider: 'Facebook',
               iconPath: 'assets/facebook_logo.svg',
-              onPressed: () {
-                print('Facebook');
-              },
+              onPressed: () {},
             ),
           ],
         ),

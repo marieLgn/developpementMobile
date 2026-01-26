@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../res/colors.dart';
 
 class ContinueButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -10,8 +11,8 @@ class ContinueButton extends StatelessWidget {
     return FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
-        foregroundColor: Color.fromARGB(240, 30, 71, 87),
-        backgroundColor: Color.fromARGB(239, 20, 99, 100),
+        foregroundColor: Color(0xFFFFFFFF),
+        backgroundColor: Color(0xFF248BA1),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       child: const Text('Continuer'),

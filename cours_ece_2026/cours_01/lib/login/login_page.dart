@@ -19,26 +19,55 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          const EmailField(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          children: [
+            const EmailField(),
 
-          ContinueButton(
-            onPressed: () {
-              print('Continuer');
-            },
-          ),
+            const SizedBox(height: 24),
 
-          const OrSeparator(),
+            ContinueButton(
+              onPressed: () {
+                print('Continuer');
+              },
+            ),
 
-          ContinueWithButton(
-            provider: 'Apple',
-            iconPath: 'assets/apple_logo.svg',
-            onPressed: () {
-              print('Continuer avec Apple');
-            },
-          ),
-        ],
+            const SizedBox(height: 40),
+
+            const OrSeparator(),
+
+            const SizedBox(height: 40),
+
+            ContinueWithButton(
+              provider: 'Apple',
+              iconPath: 'assets/apple_logo.svg',
+              onPressed: () {
+                print('Apple');
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            ContinueWithButton(
+              provider: 'Google',
+              iconPath: 'assets/google_logo.svg',
+              onPressed: () {
+                print('Google');
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            ContinueWithButton(
+              provider: 'Facebook',
+              iconPath: 'assets/facebook_logo.svg',
+              onPressed: () {
+                print('Facebook');
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

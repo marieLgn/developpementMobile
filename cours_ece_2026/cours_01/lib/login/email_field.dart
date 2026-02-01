@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cours_01/res/colors.dart';
 
 class EmailField extends StatelessWidget {
 

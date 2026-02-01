@@ -4,69 +4,118 @@ import 'package:formation_flutter/model/product.dart';
 import 'package:formation_flutter/res/app_colors.dart';
 import 'package:formation_flutter/res/app_icons.dart';
 import 'package:formation_flutter/res/app_theme_extension.dart';
+import 'package:provider/provider.dart';
+
+class ProductNotifier extends ChangeNotifier {
+  Product? _product;
+
+  Product? get product => _product;
+
+  ProductNotifier() {
+    loadProduct();
+  }
+
+  void loadProduct() async {
+    // Simulate network delay to show loading state
+    await Future.delayed(const Duration(seconds: 2));
+    _product = generateProduct();
+    notifyListeners();
+  }
+}
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
-  static const double IMAGE_HEIGHT = 300.0;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox.expand(
-        child: Stack(
-          children: [
-            PositionedDirectional(
-              top: 0.0,
-              start: 0.0,
-              end: 0.0,
-              height: IMAGE_HEIGHT,
-              child: Image.network(
-                'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=1310&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                fit: BoxFit.cover,
-                cacheHeight:
-                    (IMAGE_HEIGHT * MediaQuery.devicePixelRatioOf(context))
-                        .toInt(),
-              ),
-            ),
-            PositionedDirectional(
-              top: IMAGE_HEIGHT - 16.0,
-              start: 0.0,
-              end: 0.0,
-              bottom: 0.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16.0),
-                  ),
-                  color: Colors.white,
-                ),
-                padding: EdgeInsetsDirectional.symmetric(
-                  horizontal: 20.0,
-                  vertical: 30.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      'Petits pois et carottes',
-                      style: context.theme.title1,
-                    ),
-                    Text('Cassegrain', style: context.theme.title2),
-                    Scores(),
-                  ],
-                ),
-              ),
-            ),
-          ],
+    return ChangeNotifierProvider(
+      create: (_) => ProductNotifier(),
+      child: Scaffold(
+        body: Consumer<ProductNotifier>(
+          builder: (context, notifier, child) {
+            if (notifier.product == null) {
+              return const _Loading();
+            }
+            return _Content(product: notifier.product!);
+          },
         ),
       ),
     );
   }
 }
 
+class _Loading extends StatelessWidget {
+  const _Loading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class _Content extends StatelessWidget {
+  const _Content({required this.product});
+
+  final Product product;
+  static const double IMAGE_HEIGHT = 300.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: Stack(
+        children: [
+          PositionedDirectional(
+            top: 0.0,
+            start: 0.0,
+            end: 0.0,
+            height: IMAGE_HEIGHT,
+            child: product.picture != null
+                ? Image.network(
+                    product.picture!,
+                    fit: BoxFit.cover,
+                    cacheHeight:
+                        (IMAGE_HEIGHT * MediaQuery.devicePixelRatioOf(context))
+                            .toInt(),
+                  )
+                : Container(color: Colors.grey),
+          ),
+          PositionedDirectional(
+            top: IMAGE_HEIGHT - 16.0,
+            start: 0.0,
+            end: 0.0,
+            bottom: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                color: Colors.white,
+              ),
+              padding: EdgeInsetsDirectional.symmetric(
+                horizontal: 20.0,
+                vertical: 30.0,
+              ),
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Text(product.name ?? '', style: context.theme.title1),
+                  Text(
+                    product.brands?.join(", ") ?? '',
+                    style: context.theme.title2,
+                  ),
+                  Scores(product: product),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class Scores extends StatelessWidget {
-  const Scores({super.key});
+  const Scores({super.key, required this.product});
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +127,24 @@ class Scores extends StatelessWidget {
             children: [
               Expanded(
                 flex: 44,
-                child: _Nutriscore(nutriscore: ProductNutriScore.B),
+                child: _Nutriscore(
+                  nutriscore: product.nutriScore ?? ProductNutriScore.unknown,
+                ),
               ),
               VerticalDivider(),
               Expanded(
                 flex: 56,
-                child: _NovaGroup(novaScore: ProductNovaScore.group4),
+                child: _NovaGroup(
+                  novaScore: product.novaScore ?? ProductNovaScore.unknown,
+                ),
               ),
             ],
           ),
         ),
         Divider(),
-        _GreenScore(greenScore: ProductGreenScore.A),
+        _GreenScore(
+          greenScore: product.greenScore ?? ProductGreenScore.unknown,
+        ),
       ],
     );
   }
@@ -123,7 +178,7 @@ class _Nutriscore extends StatelessWidget {
       ProductNutriScore.C => 'res/drawables/nutriscore_c.png',
       ProductNutriScore.D => 'res/drawables/nutriscore_d.png',
       ProductNutriScore.E => 'res/drawables/nutriscore_e.png',
-      ProductNutriScore.unknown => 'TODO',
+      ProductNutriScore.unknown => 'res/drawables/nutriscore_unknown.png',
     };
   }
 }
@@ -231,19 +286,5 @@ class _GreenScore extends StatelessWidget {
       ProductGreenScore.F => 'Impact environnemental très élevé',
       ProductGreenScore.unknown => 'Score non calculé',
     };
-  }
-}
-
-class Test extends StatefulWidget {
-  const Test({super.key});
-
-  @override
-  State<Test> createState() => _TestState();
-}
-
-class _TestState extends State<Test> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }

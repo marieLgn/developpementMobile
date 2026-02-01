@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:formation_flutter/l10n/app_localizations.dart';
 import 'package:formation_flutter/model/product.dart';
@@ -16,10 +17,28 @@ class ProductNotifier extends ChangeNotifier {
   }
 
   void loadProduct() async {
-    // Simulate network delay to show loading state
-    await Future.delayed(const Duration(seconds: 2));
-    _product = generateProduct();
-    notifyListeners();
+    try {
+      final response = await Dio().get(
+        'https://api.formation-flutter.fr/v2/getProduct?barcode=5000159484695',
+      );
+      if (response.statusCode == 200) {
+        // Dio parses JSON automatically if the content-type is application/json
+        // If response.data is a String, we might need jsonDecode, but usually Dio handles it.
+        // The prompt asked to use jsonDecode, but Dio.get() default returns Map if json.
+        // To be safe and follow prompt literally about using classes:
+        final Map<String, dynamic> data = response.data is String
+            ? throw Exception(
+                "Expected JSON Map",
+              ) // Dio usually does it, but if manual: jsonDecode(response.data)
+            : response.data;
+
+        final getProductResponse = GetProductResponse.fromJSON(data);
+        _product = getProductResponse.response.toProduct();
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading product: $e');
+    }
   }
 }
 

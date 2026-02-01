@@ -1,8 +1,8 @@
+import 'package:cours_01/login/continue_button.dart';
+import 'package:cours_01/login/continue_with_button.dart';
+import 'package:cours_01/login/email_field.dart';
+import 'package:cours_01/login/or_separator.dart';
 import 'package:flutter/material.dart';
-import 'email_field.dart';
-import 'continue_button.dart';
-import 'or_separator.dart';
-import 'continue_with_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
-          children: [
+          children: <Widget>[
             EmailField(
               onChanged: (String value) {
                 setState(() {

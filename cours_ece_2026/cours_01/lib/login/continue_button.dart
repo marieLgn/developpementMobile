@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../res/colors.dart';
 
 class ContinueButton extends StatelessWidget {
-  final VoidCallback? onPressed;
 
   const ContinueButton({super.key, this.onPressed});
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../res/colors.dart';
+import 'package:cours_01/res/colors.dart';
 
 class EmailField extends StatelessWidget {
-  final ValueChanged<String> onChanged;
 
-  const EmailField({super.key, required this.onChanged});
+  const EmailField({required this.onChanged, super.key});
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {

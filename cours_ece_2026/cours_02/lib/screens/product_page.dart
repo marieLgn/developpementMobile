@@ -5,28 +5,6 @@ import 'package:formation_flutter/res/app_colors.dart';
 import 'package:formation_flutter/res/app_icons.dart';
 import 'package:formation_flutter/res/app_theme_extension.dart';
 
-class ProductProvider extends InheritedWidget {
-  final Product product;
-
-  const ProductProvider({
-    super.key,
-    required this.product,
-    required super.child,
-  });
-
-  static Product of(BuildContext context) {
-    final ProductProvider? result = context
-        .dependOnInheritedWidgetOfExactType<ProductProvider>();
-    assert(result != null, 'No ProductProvider found in context');
-    return result!.product;
-  }
-
-  @override
-  bool updateShouldNotify(ProductProvider oldWidget) {
-    return product != oldWidget.product;
-  }
-}
-
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
@@ -34,7 +12,6 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = ProductProvider.of(context);
     return Scaffold(
       body: SizedBox.expand(
         child: Stack(
@@ -45,7 +22,7 @@ class ProductPage extends StatelessWidget {
               end: 0.0,
               height: IMAGE_HEIGHT,
               child: Image.network(
-                product.picture ?? '',
+                'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=1310&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 fit: BoxFit.cover,
                 cacheHeight:
                     (IMAGE_HEIGHT * MediaQuery.devicePixelRatioOf(context))
@@ -71,11 +48,11 @@ class ProductPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .start,
                   children: [
-                    Text(product.name ?? '', style: context.theme.title1),
                     Text(
-                      product.brands?.join(', ') ?? '',
-                      style: context.theme.title2,
+                      'Petits pois et carottes',
+                      style: context.theme.title1,
                     ),
+                    Text('Cassegrain', style: context.theme.title2),
                     Scores(),
                   ],
                 ),
@@ -93,33 +70,26 @@ class Scores extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = ProductProvider.of(context);
     return Column(
       children: [
         IntrinsicHeight(
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Expanded(
                 flex: 44,
-                child: _Nutriscore(
-                  nutriscore: product.nutriScore ?? ProductNutriScore.unknown,
-                ),
+                child: _Nutriscore(nutriscore: ProductNutriScore.B),
               ),
               VerticalDivider(),
               Expanded(
                 flex: 56,
-                child: _NovaGroup(
-                  novaScore: product.novaScore ?? ProductNovaScore.unknown,
-                ),
+                child: _NovaGroup(novaScore: ProductNovaScore.group4),
               ),
             ],
           ),
         ),
         Divider(),
-        _GreenScore(
-          greenScore: product.greenScore ?? ProductGreenScore.unknown,
-        ),
+        _GreenScore(greenScore: ProductGreenScore.A),
       ],
     );
   }
